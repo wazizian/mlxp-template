@@ -6,20 +6,20 @@ A flexible deep learning project template using PyTorch, Hydra, and MLXP for exp
 
 ```
 .
-├── configs/                    # Hydra configuration files
-│   ├── config.yaml            # Base config
-│   ├── cifar10.yaml           # CIFAR-10 specific config
-│   ├── mnist.yaml             # MNIST specific config
-│   ├── imagenette.yaml        # Imagenette specific config
-│   └── mlxp.yaml              # MLXP logger config
-├── tasks/                     # Task-specific implementations
-│   ├── cifar10/              # CIFAR-10 dataset and models
-│   ├── mnist/                # MNIST dataset and models
-│   └── imagenet/             # ImageNet/Imagenette dataset and models
+├── configs/                  # Hydra configuration files
+│   ├── config.yaml             # Base config
+│   ├── cifar10.yaml            # CIFAR-10 specific config
+│   ├── mnist.yaml              # MNIST specific config
+│   ├── imagenette.yaml         # Imagenette specific config
+│   └── mlxp.yaml               # MLXP logger config
+├── tasks/                    # Task-specific implementations
+│   ├── cifar10/                # CIFAR-10 dataset and models
+│   ├── mnist/                  # MNIST dataset and models
+│   └── imagenet/               # ImageNet/Imagenette dataset and models
 ├── optimizers/               # Optimizer implementations
-├── launcher.py              # Main training script
-├── trainer.py               # Training loop implementation
-└── requirements.txt         # Project dependencies
+├── launcher.py               # Main training script
+├── trainer.py                # Training loop implementation
+└── requirements.txt          # Project dependencies
 ```
 
 ## Key Features
