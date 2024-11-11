@@ -93,6 +93,15 @@ Training metrics are automatically logged using MLXP. Logs are stored in the `lo
 3. Implement model architecture in `models.py`
 4. Create a corresponding config file in `configs/`
 
-## License
+## Development
 
-MIT License
+This project uses pre-commit hooks to maintain code quality. After installing the requirements, set up pre-commit:
+
+```bash
+pre-commit run -a
+```
+
+## Acknowledgments
+
+- [MLXP](https://github.com/inria-thoth/mlxp) - Experiment tracking framework
+- [Lightning-Hydra Template](https://github.com/ashleve/lightning-hydra-template) - Project structure inspiration
