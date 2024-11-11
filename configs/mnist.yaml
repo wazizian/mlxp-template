@@ -14,7 +14,8 @@ model:
   _target_: tasks.mnist.models.build_net
 
 optimizer:
-  _target_: optimizers.dog.gdog.build_gdog
+  _target_: optimizers.builtin.build_adam
+  learning_rate: 1.e-3
 
 averager:
   _target_: optimizers.averagers.build_pda

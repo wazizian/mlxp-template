@@ -15,8 +15,8 @@ model:
   depth: 34
 
 optimizer:
-  _target_: optimizers.dog.gdog.build_gdog
-  init_eta: 1e-3
+  _target_: optimizers.builtin.build_adam
+  learning_rate: 1.e-3
 
 averager:
   _target_: optimizers.averagers.build_pda
