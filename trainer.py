@@ -73,7 +73,7 @@ def main(ctx, run, device, dataloaders, model, avg_model, optimizer, criterion):
             it_train_loss = loss.item()
             optimizer.zero_grad()
             loss.backward()
-            optimizer.step(train_loss=it_train_loss, val_loss=it_val_loss)
+            optimizer.step()
 
             # Update metrics
             train_loss += loss.item()
