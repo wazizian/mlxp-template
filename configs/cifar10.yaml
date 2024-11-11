@@ -1,0 +1,31 @@
+seed: 0
+dataset:
+  _target_: tasks.cifar10.data.build_cifar10
+  data_storage: "data"
+  name: "cifar10"
+  download: True
+  batch_size: 256
+  num_workers: 4
+  pin_memory: True
+  n_train: 50000
+  n_val: 10000
+
+model:
+  _target_: tasks.cifar10.models.build_resnet
+  depth: 34
+
+optimizer:
+  _target_: optimizers.dog.gdog.build_gdog
+  init_eta: 1e-3
+
+averager:
+  _target_: optimizers.averagers.build_pda
+
+loss:
+  _target_: tasks.losses.build_crossentropy
+
+train:
+  force_gpu: False
+  epochs: 10
+  eval_every_n_steps: 1
+  compile: True

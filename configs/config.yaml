@@ -1,0 +1,30 @@
+seed: 0
+dataset:
+  _target_: tasks.cifar10.data.build_cifar10
+  data_storage: "data"
+  name: "cifar10"
+  download: False
+  batch_size: 256
+  num_workers: 4
+  pin_memory: False
+
+model:
+  _target_: tasks.cifar10.models.build_resnet
+  depth: 18
+
+optimizer:
+  _target_: optimizers.builtin.build_adam
+  learning_rate: 1.e-3
+
+loss:
+  _target_: tasks.losses.build_crossentropy
+
+train:
+  force_gpu: True
+  epochs: 10
+  eval_every_n_steps: 10
+  compile: True
+
+wandb:
+  project: "adapt"
+  tags: ["imagenette", "resnet"]

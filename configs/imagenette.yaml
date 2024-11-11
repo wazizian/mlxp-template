@@ -1,0 +1,29 @@
+seed: 0
+dataset:
+  _target_: tasks.imagenet.data.build_imagenette
+  data_storage: "data"
+  name: "imagenette"
+  download: False
+  batch_size: 8
+  num_workers: 4
+  pin_memory: False
+
+model:
+  _target_: tasks.imagenet.models.build_resnet
+  depth: 18
+  classes: 10
+
+optimizer:
+  _target_: optimizers.dog.dog.build_dog
+
+averager:
+  _target_: optimizers.averagers.build_pda
+
+loss:
+  _target_: tasks.losses.build_crossentropy
+
+train:
+  force_gpu: True
+  epochs: 10
+  eval_every_n_steps: 1
+  compile: True
