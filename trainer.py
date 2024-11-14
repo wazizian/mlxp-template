@@ -36,19 +36,19 @@ def main(ctx, run, device, dataloaders, model, avg_model, optimizer, criterion):
         val_steps = 0
 
         # Train one epoch
-        for batch in train_dataloader:
+        for train_batch in train_dataloader:
             # Eval
             try:
-                batch = next(val_iterator)
+                val_batch = next(val_iterator)
             except StopIteration:
                 val_iterator = iter(val_dataloader)
-                batch = next(val_iterator)
+                val_batch = next(val_iterator)
 
             # One step of validation
             model.eval()
             avg_model.eval()
             with torch.no_grad():
-                inputs, targets = batch
+                inputs, targets = val_batch
                 inputs = inputs.to(device)
                 targets = targets.to(device)
                 preds = model(inputs)
@@ -64,7 +64,7 @@ def main(ctx, run, device, dataloaders, model, avg_model, optimizer, criterion):
 
             # Train one step
             model.train()
-            inputs, targets = batch
+            inputs, targets = train_batch
             inputs = inputs.to(device)
             targets = targets.to(device)
 
