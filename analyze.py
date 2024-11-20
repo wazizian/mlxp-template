@@ -1,11 +1,13 @@
-import mlxp
 import matplotlib.pyplot as plt
+import mlxp
 import numpy as np
+
 
 def moving_average(x, w):
     res = np.cumsum(x, dtype=float)
     res[w:] = res[w:] - res[:-w]
-    return res[w - 1:] / w
+    return res[w - 1 :] / w
+
 
 def fill_missing(mlxp_df, keys):
     for datadict in mlxp_df:
@@ -13,8 +15,9 @@ def fill_missing(mlxp_df, keys):
             if key not in datadict:
                 datadict.update({key: ""})
 
+
 def analyze():
-    parent_log_dir = './logs/'
+    parent_log_dir = "./logs/"
     reader = mlxp.Reader(parent_log_dir)
 
     query = "info.status == 'COMPLETE'"
@@ -24,15 +27,15 @@ def analyze():
     print(keys)
 
     print(f"Found {len(results)} results with ids {results[:]['info.logger.log_id']}")
-    data_keys = [key for key in results.keys() if key.startswith('config.dataset')]
-    model_keys = [key for key in results.keys() if key.startswith('config.model')]
-    optim_keys = [key for key in results.keys() if key.startswith('config.optimizer')]
-    avg_keys = [key for key in results.keys() if key.startswith('config.averager')]
-    loss_keys = [key for key in results.keys() if key.startswith('config.loss')]
-    train_keys = [key for key in results.keys() if key.startswith('config.train')]
+    data_keys = [key for key in results.keys() if key.startswith("config.dataset")]
+    model_keys = [key for key in results.keys() if key.startswith("config.model")]
+    optim_keys = [key for key in results.keys() if key.startswith("config.optimizer")]
+    avg_keys = [key for key in results.keys() if key.startswith("config.averager")]
+    loss_keys = [key for key in results.keys() if key.startswith("config.loss")]
+    train_keys = [key for key in results.keys() if key.startswith("config.train")]
     grouped_results = results.groupby(data_keys + model_keys + loss_keys)
-    val_loss_key = 'train_metrics.val/loss'
-    avg_val_loss_key = 'train_metrics.avg_val/loss'
+    val_loss_key = "train_metrics.val/loss"
+    avg_val_loss_key = "train_metrics.avg_val/loss"
     window = 200
     for i, (group_key, df) in enumerate(grouped_results.items()):
         print(f"Group {i}:")
@@ -62,7 +65,6 @@ def analyze():
         plt.legend()
         plt.show()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     analyze()
-
-

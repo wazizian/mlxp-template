@@ -73,11 +73,13 @@ model:
 ```
 
 This configuration is instantiated in `launcher.py` using:
+
 ```python
 model = hydra.utils.call(cfg.model)
 ```
 
 This pattern allows for:
+
 - Dynamic object instantiation from config files
 - Easy parameter modification via command line
 - Clean separation of configuration and code

@@ -17,8 +17,7 @@ optimizer:
   _target_: optimizers.builtin.build_adam
   learning_rate: 1.e-3
 
-averager:
-  _target_: optimizers.averagers.build_pda
+averager: null
 
 loss:
   _target_: tasks.losses.build_crossentropy

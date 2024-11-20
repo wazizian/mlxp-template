@@ -1,6 +1,7 @@
-import types
-import inspect
 import functools
+import inspect
+import types
+
 
 def with_extra_args_support(optimizer):
     original_step = optimizer.step

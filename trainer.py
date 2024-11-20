@@ -1,6 +1,7 @@
 import torch
 
-def main(ctx, run, device, dataloaders, model, avg_model, optimizer, criterion):
+
+def main(ctx, device, dataloaders, model, avg_model, optimizer, criterion):
     torch.set_float32_matmul_precision("high")
 
     cfg = ctx.config
@@ -13,13 +14,15 @@ def main(ctx, run, device, dataloaders, model, avg_model, optimizer, criterion):
 
     # Switching to device
     model = model.to(device)
-    avg_model = avg_model.to(device)
+    if avg_model is not None:
+        avg_model = avg_model.to(device)
     criterion = criterion.to(device)
 
     # Compiling
     if cfg.train.compile:
         model = torch.compile(model)
-        avg_model = torch.compile(avg_model)
+        if avg_model is not None:
+            avg_model = torch.compile(avg_model)
         criterion = torch.compile(criterion)
 
     len_print_epoch = len(str(cfg.train.epochs))
@@ -34,6 +37,10 @@ def main(ctx, run, device, dataloaders, model, avg_model, optimizer, criterion):
         val_loss = 0.0
         val_acc = 0.0
         val_steps = 0
+        it_train_loss = 0.0
+        it_val_loss = 0.0
+        it_avg_train_loss = 0.0
+        it_avg_val_loss = 0.0
 
         # Train one epoch
         for train_batch in train_dataloader:
@@ -45,9 +52,8 @@ def main(ctx, run, device, dataloaders, model, avg_model, optimizer, criterion):
                 val_batch = next(val_iterator)
 
             # One step of validation
-            model.eval()
-            avg_model.eval()
             with torch.no_grad():
+                model.eval()
                 inputs, targets = val_batch
                 inputs = inputs.to(device)
                 targets = targets.to(device)
@@ -58,9 +64,11 @@ def main(ctx, run, device, dataloaders, model, avg_model, optimizer, criterion):
                 val_acc += torch.mean((preds.argmax(dim=-1) == targets).float()).item()
                 val_steps += 1
 
-                preds = avg_model(inputs)
-                loss = criterion(preds, targets)
-                it_avg_val_loss = loss.item()
+                if avg_model is not None:
+                    avg_model.eval()
+                    preds = avg_model(inputs)
+                    loss = criterion(preds, targets)
+                    it_avg_val_loss = loss.item()
 
             # Train one step
             model.train()
@@ -79,14 +87,14 @@ def main(ctx, run, device, dataloaders, model, avg_model, optimizer, criterion):
             train_loss += loss.item()
             train_acc += torch.mean((preds.argmax(dim=-1) == targets).float()).item()
             train_steps += 1
-        
-            avg_model.update_parameters(model)
 
-            avg_model.train()
-            with torch.no_grad():
-                preds = avg_model(inputs)
-                loss = criterion(preds, targets)
-                it_avg_train_loss = loss.item()
+            if avg_model is not None:
+                avg_model.update_parameters(model)
+                avg_model.train()
+                with torch.no_grad():
+                    preds = avg_model(inputs)
+                    loss = criterion(preds, targets)
+                    it_avg_train_loss = loss.item()
 
             logger.log_metrics(
                 {
@@ -96,7 +104,7 @@ def main(ctx, run, device, dataloaders, model, avg_model, optimizer, criterion):
                     "avg_val/loss": it_avg_val_loss,
                 },
                 log_name="train_metrics",
-                )
+            )
 
         # End of epoch
         print(f"[{epoch+1:>{len_print_epoch}} / {cfg.train.epochs}] ", end="")

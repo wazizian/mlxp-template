@@ -1,7 +1,8 @@
 import torchvision
 import torchvision.models as models
 
-def build_resnet(classes: int, depth:int=18):
+
+def build_resnet(classes: int, depth: int = 18):
     if depth == 18:
         return models.resnet18(num_classes=classes)
     elif depth == 34:

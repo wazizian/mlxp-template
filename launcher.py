@@ -5,8 +5,8 @@ import mlxp
 import rootutils
 import torch
 
-import trainer
 import optimizers.utils
+import trainer
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -51,9 +51,12 @@ def main(ctx):
     optimizer = optimizers.utils.with_extra_args_support(optimizer)
 
     # Averager
-    print(f"Preparing averager ({cfg.averager._target_})...")
-    averager_builder = hydra.utils.call(cfg.averager)
-    avg_model = averager_builder(model)
+    if cfg.averager is not None:
+        print(f"Preparing averager ({cfg.averager._target_})...")
+        averager_builder = hydra.utils.call(cfg.averager)
+        avg_model = averager_builder(model)
+    else:
+        avg_model = None
 
     # Loss
     print(f"Preparing loss ({cfg.loss._target_})...")
