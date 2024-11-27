@@ -1,0 +1,32 @@
+seed: 0
+dataset:
+  _target_: tasks.simple_classification.data.build_moons
+  num_workers: 4
+  pin_memory: False
+  batch_size: 8
+  n_train: 1000
+  n_val: 1000
+  train_only: False
+  noise: 0.1
+  seed: 0
+
+model:
+  _target_: tasks.simple_classification.models.build_MLP
+  input_size: 2
+  output_size: 2
+  hidden_sizes: [16]
+
+optimizer:
+  _target_: optimizers.builtin.build_adam
+  learning_rate: 1.e-3
+
+averager: null
+
+loss:
+  _target_: tasks.losses.build_crossentropy
+
+train:
+  force_gpu: False
+  epochs: 10
+  eval_every_n_steps: 1
+  compile: False
