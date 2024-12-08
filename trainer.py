@@ -27,6 +27,10 @@ def main(ctx, device, dataloaders, model, avg_model, optimizer, criterion):
 
     len_print_epoch = len(str(cfg.train.epochs))
 
+    # Best val loss
+    best_val_loss = float("inf")
+    counter = 0
+
     # Training loop
     print("Starting training...")
     for epoch in range(cfg.train.epochs):
@@ -118,3 +122,12 @@ def main(ctx, device, dataloaders, model, avg_model, optimizer, criterion):
         print(f"val/loss: {val_loss:>6.4e} ", end="")
         print(f"val/acc: {val_acc:>6.4e} ", end="")
         print("", end="\n")
+
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            counter = 0
+        else:
+            counter += 1
+        if counter == cfg.train.early_stopping_patience:
+            print("Early stopping: val loss did not improve for", counter, "epochs.")
+            break
