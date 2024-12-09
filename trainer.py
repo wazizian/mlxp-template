@@ -42,7 +42,9 @@ def main(ctx, device, dataloaders, model, avg_model, optimizer, criterion):
         val_acc = 0.0
         val_steps = 0
         it_train_loss = 0.0
+        it_train_acc = 0.0
         it_val_loss = 0.0
+        it_val_acc = 0.0
         it_avg_train_loss = 0.0
         it_avg_val_loss = 0.0
 
@@ -64,8 +66,9 @@ def main(ctx, device, dataloaders, model, avg_model, optimizer, criterion):
                 preds = model(inputs)
                 loss = criterion(preds, targets)
                 it_val_loss = loss.item()
+                it_val_acc = torch.mean((preds.argmax(dim=-1) == targets).float()).item()
                 val_loss += it_val_loss
-                val_acc += torch.mean((preds.argmax(dim=-1) == targets).float()).item()
+                val_acc += it_val_acc
                 val_steps += 1
 
                 if avg_model is not None:
@@ -86,6 +89,7 @@ def main(ctx, device, dataloaders, model, avg_model, optimizer, criterion):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            it_train_acc = torch.mean((preds.argmax(dim=-1) == targets).float()).item()
 
             # Update metrics
             train_loss += loss.item()
@@ -106,9 +110,15 @@ def main(ctx, device, dataloaders, model, avg_model, optimizer, criterion):
                     "val/loss": it_val_loss,
                     "avg_train/loss": it_avg_train_loss,
                     "avg_val/loss": it_avg_val_loss,
+                    "train/acc": it_train_acc,
+                    "val/acc": it_val_acc,
                 },
                 log_name="train_metrics",
             )
+            
+            if it_val_acc >= cfg.train.val_acc_stop:
+                print(f"Validation accuracy reached {cfg.train.val_acc_stop}. Stopping.")
+                return
 
         # End of epoch
         print(f"[{epoch+1:>{len_print_epoch}} / {cfg.train.epochs}] ", end="")

@@ -23,16 +23,17 @@ def main(ctx):
 
     # Device
     print(f"Preparing device (force GPU: {cfg.train.force_gpu})...")
-    device = (
+    acc_device = (
         "cuda"
         if torch.cuda.is_available()
         else "mps"
         if torch.backends.mps.is_available()
         else "cpu"
     )
-    print(f"Device: {device}")
-    if cfg.train.force_gpu and device != "cuda":
+    print(f"Device: {acc_device}")
+    if cfg.train.force_gpu and acc_device != "cuda":
         raise ValueError("CUDA is not available")
+    device = acc_device if not cfg.train.force_cpu else "cpu"
 
     # Dataset
     print(f"Preparing dataset ({cfg.dataset._target_})...")

@@ -28,7 +28,9 @@ loss:
 
 train:
   force_gpu: False
+  force_cpu: True
   epochs: 2000
   eval_every_n_steps: 1
   compile: False
   early_stopping_patience: 10
+  val_acc_stop: 1.0
